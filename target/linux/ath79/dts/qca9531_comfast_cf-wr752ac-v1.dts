@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "qca953x.dtsi"
+
+/ {
+	compatible = "comfast,cf-wr752ac-v1", "qca,qca9531";
+	model = "COMFAST CF-WR752AC v1";
+
+	aliases {
+		serial0 = &uart;
+		led-boot = &led_lan;
+		led-failsafe = &led_lan;
+		led-upgrade = &led_lan;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&jtag_disable_pins &led_wlan2g_pin &led_wlan5g_pin>;
+
+		led_lan: lan {
+			label = "cf-wr752ac-v1:blue:lan";
+			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "netdev";
+		};
+
+		wlan2g {
+			label = "cf-wr752ac-v1:green:wlan2g";
+			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy1tpt";
+		};
+
+		wlan5g {
+			label = "cf-wr752ac-v1:red:wlan5g";
+			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy0tpt";
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		button {
+			label = "reset";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+			debounce-interval = <60>;
+		};
+	};
+
+	watchdog {
+		compatible = "linux,wdt-gpio";
+
+		gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		hw_algo = "toggle";
+		hw_margin_ms = <1200>;
+		always-running;
+	};
+};
+
+&pinmux {
+	led_wlan2g_pin: pinmux_lan {
+		pinctrl-single,bits = <0x0c 0x0 0xff000000>;
+	};
+
+	led_wlan5g_pin: pinmux_wlan2g {
+		pinctrl-single,bits = <0x08 0x0 0xff000000>;
+	};
+};
+
+&pcie0 {
+	status = "okay";
+};
+
+&spi {
+	status = "okay";
+	
+	num-cs = <1>;
+
+	flash@0 {
+		compatible = "winbond,w25q128", "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x010000>;
+				read-only;
+			};
+
+			art: partition@10000 {
+				label = "art";
+				reg = <0x010000 0x010000>;
+				read-only;
+			};
+
+			partition@20000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x020000 0xfd0000>;
+			};
+
+			partition@ff0000 {
+				label = "nvram";
+				reg = <0xff0000 0x010000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&uart {
+	status = "okay";
+};
+
+&eth0 {
+	status = "okay";
+
+	phy-handle = <&swphy4>;
+	mtd-mac-address = <&art 0x0>;
+};
+
+&eth1 {
+	// "Disable" unpopulated GMAC1
+	compatible = "syscon", "simple-mfd";
+};
+
+&wmac {
+	status = "okay";
+	
+	mtd-cal-data = <&art 0x1000>;
+	mtd-mac-address = <&art 0x0>;
+	mtd-mac-address-increment = <10>;
+};
