@@ -330,6 +330,17 @@ define Device/comfast_cf-wr650ac-v2
 endef
 TARGET_DEVICES += comfast_cf-wr650ac-v2
 
+define Device/comfast_cf-wr752ac-v1
+  SOC := qca9531
+  DEVICE_VENDOR := COMFAST
+  DEVICE_MODEL := CF-WR752AC
+  DEVICE_VARIANT := v1
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct \
+	kmod-usb2 -uboot-envtools
+  IMAGE_SIZE := 16192k
+endef
+TARGET_DEVICES += comfast_cf-wr752ac-v1
+
 define Device/devolo_dvl1200e
   SOC := qca9558
   DEVICE_VENDOR := devolo
