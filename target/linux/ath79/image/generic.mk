@@ -351,8 +351,8 @@ define Device/comfast_cf-wr752ac-v1
   DEVICE_VENDOR := COMFAST
   DEVICE_MODEL := CF-WR752AC
   DEVICE_VARIANT := v1
-DEVICE_PACKAGES := kmod-leds-gpio kmod-usb2 kmod-ath10k-ct ath10k-firmware-qca9888-ct \
-	-uboot-envtools swconfig
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct \
+	kmod-usb2 -uboot-envtools
   IMAGE_SIZE := 16192k
 endef
 TARGET_DEVICES += comfast_cf-wr752ac-v1

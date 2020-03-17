@@ -81,8 +81,8 @@ comfast,cf-e560ac)
 	ucidef_set_led_switch "lan4" "LAN4" "$boardname:blue:lan4" "switch0" "0x10"
 	;;
 comfast,cf-wr752ac-v1)
-        ucidef_set_led_netdev "lan" "LAN" "$boardname:blue:lan" "eth0"
-        ;;
+  ucidef_set_led_netdev "lan" "LAN" "$boardname:blue:lan" "eth0"
+  ;;
 devolo,magic-2-wifi)
 	ucidef_set_led_netdev "plcw" "dLAN" "devolo:white:dlan" "eth0.1" "rx"
 	;;

@@ -32,13 +32,11 @@
 		wlan2g {
 			label = "cf-wr752ac-v1:green:wlan2g";
 			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "phy1tpt";
 		};
 
 		wlan5g {
 			label = "cf-wr752ac-v1:red:wlan5g";
 			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "phy0tpt";
 		};
 	};
 
@@ -52,24 +50,15 @@
 			debounce-interval = <60>;
 		};
 	};
-
-	watchdog {
-		compatible = "linux,wdt-gpio";
-
-		gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
-		hw_algo = "toggle";
-		hw_margin_ms = <1200>;
-		always-running;
-	};
 };
 
 &pinmux {
-	led_wlan2g_pin: pinmux_lan {
-		pinctrl-single,bits = <0x0c 0x0 0xff000000>;
+	led_wlan2g_pin: pinmux_wlan2g {
+		pinctrl-single,bits = <0xc 0x0 0xff000000>;
 	};
 
-	led_wlan5g_pin: pinmux_wlan2g {
-		pinctrl-single,bits = <0x08 0x0 0xff000000>;
+	led_wlan5g_pin: pinmux_wlan5g {
+		pinctrl-single,bits = <0x8 0x0 0xff000000>;
 	};
 };
 
@@ -83,7 +72,7 @@
 	num-cs = <1>;
 
 	flash@0 {
-		compatible = "winbond,w25q128", "jedec,spi-nor";
+		compatible = "jedec,spi-nor";
 		reg = <0>;
 		spi-max-frequency = <25000000>;
 
